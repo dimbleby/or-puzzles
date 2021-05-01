@@ -53,9 +53,6 @@ def solve_puzzle(row_clues, column_clues, givens):
     # Discard pointless clues.
     row_clues = [[clue for clue in clues if clue > 0] for clues in row_clues]
     column_clues = [[clue for clue in clues if clue > 0] for clues in column_clues]
-    row_sum = sum(clue for clues in row_clues for clue in clues)
-    column_sum = sum(clue for clues in column_clues for clue in clues)
-    print(f"sums are {row_sum} and {column_sum}")
 
     # Count rows and columns.
     num_rows = len(row_clues)
