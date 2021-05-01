@@ -6,17 +6,15 @@ def constrain_line(model, line, clues, invert=False):
     """Constrain a line so that it satisfies the description of it in the clues"""
     # We're going to advance through a state machine.  Create some helpful labels to
     # help track this.  Eg clues [2, 3, 2] -> labels [0, 1, 1, 0, 1, 1, 1, 0, 1, 1].
+    blank, square = (1, 0) if invert else (0, 1)
     labels = []
     for clue in clues:
-        labels.append(0)
-        labels.extend([1] * clue)
+        labels.append(blank)
+        labels.extend([square] * clue)
 
     # Wrinkle: when we have no clues, we have a single state.
     if not labels:
-        labels = [0]
-
-    if invert:
-        labels = [1 - label for label in labels]
+        labels = [blank]
 
     # We must go all the way from the start to the end.
     initial_state = 0
@@ -31,7 +29,6 @@ def constrain_line(model, line, clues, invert=False):
     #
     # - else (we're on a filled square) we're only allowed to move along if we get the
     #   appropriate input.
-    blank, square = (1, 0) if invert else (0, 1)
     transitions = {}
     for (state, label) in enumerate(labels):
         if state == final_state:
@@ -183,26 +180,31 @@ RED3 = [
     [14, 2, 3],
     [12, 1, 3],
     [9, 2, 2, 1],
+    #
     [2, 7, 1, 4],
     [4, 4, 3, 1, 1],
     [1, 3, 2, 1, 3, 1, 1],
     [3, 2, 3, 2],
     [3, 1, 2, 3, 1],
+    #
     [2, 5, 2, 1, 3, 1],
     [1, 8, 1, 2, 3],
     [1, 11, 1, 1],
     [2, 1, 2, 6, 4, 2],
     [1, 1, 4, 3, 1],
+    #
     [2, 2, 1, 3, 2],
     [1, 2, 3, 1],
     [1, 2, 1, 3],
     [4, 2, 1],
     [3, 1, 2],
+    #
     [3, 2, 1],
     [3, 1, 1, 2],
     [3, 2, 1],
     [3, 2, 2],
     [3, 2, 1],
+    #
     [4, 3, 2],
     [2, 3, 3, 1],
     [3, 4, 4],
