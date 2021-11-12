@@ -2,7 +2,7 @@
 from ortools.sat.python import cp_model
 
 
-def solve_puzzle():
+def solve_puzzle() -> None:
     """Solve a puzzle"""
     # Prepare a model.
     model = cp_model.CpModel()
@@ -79,8 +79,8 @@ def solve_puzzle():
 
     # We want to know everything...
     solver = cp_model.CpSolver()
-    solved = solver.Solve(model)
-    if solved:
+    status = solver.Solve(model)
+    if status == cp_model.FEASIBLE or status == cp_model.OPTIMAL:
         print
         print("nests:", [solver.Value(nests[i]) + 1 for i in range(5)])
         print("breeds:", [solver.Value(breeds[i]) + 1 for i in range(5)])

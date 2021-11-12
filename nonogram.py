@@ -93,9 +93,6 @@ def solve_puzzle(row_clues, column_clues, givens, invert_columns=False):
         print("No solution found")
 
     print("")
-    print("Failures:", solver.NumConflicts())
-    print("Branches:", solver.NumBranches())
-    print("WallTime: {walltime}ms".format(walltime=solver.WallTime()))
 
 
 RED1 = [
@@ -331,4 +328,3 @@ if __name__ == "__main__":
     solve_puzzle(RED1, BLUE3, [], invert_columns=True)
     solve_puzzle(RED2, BLUE1, [], invert_columns=True)
     solve_puzzle(RED3, BLUE2, [], invert_columns=True)
-    print("")

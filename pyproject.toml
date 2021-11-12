@@ -10,7 +10,17 @@ ortools = "^9.0.9048"
 
 [tool.poetry.dev-dependencies]
 black = "^21.4b2"
+mypy = "^0.910"
+flake8 = "^4.0.1"
+isort = "^5.10.1"
 
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+
+[tool.isort]
+profile = "black"
