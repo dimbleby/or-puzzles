@@ -1,8 +1,15 @@
 #!/bin/env python
+from typing import List, Tuple
+
 from ortools.sat.python import cp_model
 
 
-def constrain_line(model, line, clues, invert=False):
+def constrain_line(
+    model: cp_model.CpModel,
+    line: List[cp_model.IntVar],
+    clues: List[int],
+    invert: bool = False,
+) -> None:
     """Constrain a line so that it satisfies the description of it in the clues"""
     # We're going to advance through a state machine.  Create some helpful labels to
     # help track this.  Eg clues [2, 3, 2] -> labels [0, 1, 1, 0, 1, 1, 1, 0, 1, 1].
@@ -45,7 +52,12 @@ def constrain_line(model, line, clues, invert=False):
     model.AddAutomaton(line, initial_state, [final_state], tuples)
 
 
-def solve_puzzle(row_clues, column_clues, givens, invert_columns=False):
+def solve_puzzle(
+    row_clues: List[List[int]],
+    column_clues: List[List[int]],
+    givens: List[Tuple[int, int]],
+    invert_columns: bool = False,
+) -> None:
     """Solve a puzzle"""
     # Discard pointless clues.
     row_clues = [[clue for clue in clues if clue > 0] for clues in row_clues]
@@ -95,7 +107,7 @@ def solve_puzzle(row_clues, column_clues, givens, invert_columns=False):
     print("")
 
 
-RED1 = [
+RED1: List[List[int]] = [
     [1],
     [3],
     [4],
@@ -133,7 +145,7 @@ RED1 = [
     [2, 1],
 ]
 
-RED2 = [
+RED2: List[List[int]] = [
     [4, 25],
     [2, 4, 22],
     [1, 3, 6, 12, 2],
@@ -171,7 +183,7 @@ RED2 = [
     [2],
 ]
 
-RED3 = [
+RED3: List[List[int]] = [
     [17, 4],
     [17, 1, 3],
     [14, 2, 3],
@@ -209,7 +221,7 @@ RED3 = [
     [4],
 ]
 
-BLUE1 = [
+BLUE1: List[List[int]] = [
     [26],
     [1, 25],
     [1, 22, 1],
@@ -248,7 +260,7 @@ BLUE1 = [
 ]
 
 
-BLUE2 = [
+BLUE2: List[List[int]] = [
     [3, 2, 2, 1, 1, 11],
     [3, 3, 2, 1, 2, 11],
     [3, 4, 2, 3, 6, 2],
@@ -286,7 +298,7 @@ BLUE2 = [
     [3, 4, 18],
 ]
 
-BLUE3 = [
+BLUE3: List[List[int]] = [
     [30],
     [30],
     [15, 14],
