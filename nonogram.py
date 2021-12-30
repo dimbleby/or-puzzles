@@ -72,7 +72,7 @@ def solve_puzzle(
 
     # squares[i, j]: is square i,j filled in?
     squares = {
-        (i, j): model.NewBoolVar("squares_{i}_{j}".format(i=i, j=j))
+        (i, j): model.NewBoolVar(f"squares_{i}_{j}")
         for i in range(num_rows)
         for j in range(num_columns)
     }

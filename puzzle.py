@@ -10,19 +10,19 @@ def solve_puzzle() -> None:
     # Create variables.
     [canaries, spain, switzerland, czech_republic, bulgaria] = range(5)
 
-    nests = [model.NewIntVar(0, 4, "nests{i}".format(i=i)) for i in range(5)]
+    nests = [model.NewIntVar(0, 4, f"nests{i}") for i in range(5)]
     [chimney, hedge, house, lake, straw] = nests
 
-    breeds = [model.NewIntVar(0, 4, "breeds{i}".format(i=i)) for i in range(5)]
+    breeds = [model.NewIntVar(0, 4, f"breeds{i}") for i in range(5)]
     [finch, mallard, starling, swallow, woodpecker] = breeds
 
-    foods = [model.NewIntVar(0, 4, "foods{i}".format(i=i)) for i in range(5)]
+    foods = [model.NewIntVar(0, 4, f"foods{i}") for i in range(5)]
     [bread, cake, cookies, croissants, scones] = foods
 
-    activities = [model.NewIntVar(0, 4, "activities{i}".format(i=i)) for i in range(5)]
+    activities = [model.NewIntVar(0, 4, f"activities{i}") for i in range(5)]
     [bird_baths, collecting, pecking, stealing, squawking] = activities
 
-    hometowns = [model.NewIntVar(0, 4, "hometowns{i}".format(i=i)) for i in range(5)]
+    hometowns = [model.NewIntVar(0, 4, f"hometowns{i}") for i in range(5)]
     [barking, camden, ealing, hounslow, kensington] = hometowns
 
     model.AddAllDifferent(nests)
@@ -80,8 +80,8 @@ def solve_puzzle() -> None:
     # We want to know everything...
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
-    if status == cp_model.FEASIBLE or status == cp_model.OPTIMAL:
-        print
+    if status in (cp_model.FEASIBLE or status == cp_model.OPTIMAL):
+        print()
         print("nests:", [solver.Value(nests[i]) + 1 for i in range(5)])
         print("breeds:", [solver.Value(breeds[i]) + 1 for i in range(5)])
         print("foods:", [solver.Value(foods[i]) + 1 for i in range(5)])
