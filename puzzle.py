@@ -80,7 +80,7 @@ def solve_puzzle() -> None:
     # We want to know everything...
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
-    if status in (cp_model.FEASIBLE or status == cp_model.OPTIMAL):
+    if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):
         print()
         print("nests:", [solver.Value(nests[i]) + 1 for i in range(5)])
         print("breeds:", [solver.Value(breeds[i]) + 1 for i in range(5)])
