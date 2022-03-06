@@ -5,7 +5,7 @@ description = ""
 authors = ["David Hotham <david.hotham@blueyonder.co.uk>"]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
+python = "^3.8"
 ortools = "^9.0.9048,!=9.1.9552"
 
 [tool.poetry.dev-dependencies]
