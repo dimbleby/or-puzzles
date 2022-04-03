@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python3
 from typing import List, Tuple
 
 from ortools.sat.python import cp_model
@@ -11,8 +11,8 @@ def constrain_line(
     invert: bool = False,
 ) -> None:
     """Constrain a line so that it satisfies the description of it in the clues"""
-    # We're going to advance through a state machine.  Create some helpful labels to
-    # help track this.  Eg clues [2, 3, 2] -> labels [0, 1, 1, 0, 1, 1, 1, 0, 1, 1].
+    # We're going to advance through a state machine.  Create some labels to help track
+    # this.  Eg clues [2, 3, 2] -> labels [0, 1, 1, 0, 1, 1, 1, 0, 1, 1].
     blank, square = (1, 0) if invert else (0, 1)
     labels = []
     for clue in clues:
