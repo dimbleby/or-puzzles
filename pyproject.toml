@@ -6,11 +6,11 @@ authors = ["David Hotham <david.hotham@blueyonder.co.uk>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-ortools = "^9.0.9048,!=9.1.9552"
+ortools = "^9.3.10497"
 
 [tool.poetry.dev-dependencies]
-black = ">=21.4b2"
-mypy = ">=0.930"
+black = ">=22.3.0"
+mypy = ">=0.950"
 flake8 = ">=4.0.1"
 isort = ">=5.10.1"
 
@@ -19,6 +19,7 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
+show_error_codes = true
 strict = true
 
 [[tool.mypy.overrides]]
