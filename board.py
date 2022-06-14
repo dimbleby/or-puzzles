@@ -44,7 +44,7 @@ class Piece:
         return Piece(cells, white)
 
     def rotations(self) -> List["Piece"]:
-        pieces = [self.rotate(turns) for turns in [0, 1, 2, 3]]
+        pieces = [self.rotate(turns) for turns in range(4)]
         unique = []
         for piece in pieces:
             if piece not in unique:
@@ -93,9 +93,9 @@ PIECES = [
 ]
 
 
-class SolutionPrinter(cp_model.CpSolverSolutionCallback):  # type: ignore
+class SolutionPrinter(cp_model.CpSolverSolutionCallback):  # type: ignore[misc]
     def __init__(self, covers: Dict[Tuple[int, int], cp_model.IntVar]):
-        cp_model.CpSolverSolutionCallback.__init__(self)
+        super().__init__()
         self.covers = covers
         self.solution_count = 0
 

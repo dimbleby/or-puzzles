@@ -10,7 +10,7 @@ ortools = "^9.3.10497"
 
 [tool.poetry.dev-dependencies]
 black = ">=22.3.0"
-mypy = ">=0.950"
+mypy = ">=0.961"
 flake8 = ">=4.0.1"
 isort = ">=5.10.1"
 
