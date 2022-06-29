@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
-from typing import List, Tuple
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from ortools.sat.python import cp_model
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def constrain_line(
     model: cp_model.CpModel,
-    line: List[cp_model.IntVar],
-    clues: List[int],
+    line: list[cp_model.IntVar],
+    clues: Iterable[int],
     invert: bool = False,
 ) -> None:
     """Constrain a line so that it satisfies the description of it in the clues"""
@@ -53,9 +58,9 @@ def constrain_line(
 
 
 def solve_puzzle(
-    row_clues: List[List[int]],
-    column_clues: List[List[int]],
-    givens: List[Tuple[int, int]],
+    row_clues: Iterable[Iterable[int]],
+    column_clues: Iterable[Iterable[int]],
+    givens: Iterable[tuple[int, int]],
     invert_columns: bool = False,
 ) -> None:
     """Solve a puzzle"""
@@ -107,7 +112,7 @@ def solve_puzzle(
     print("")
 
 
-RED1: List[List[int]] = [
+RED1: list[list[int]] = [
     [1],
     [3],
     [4],
@@ -145,7 +150,7 @@ RED1: List[List[int]] = [
     [2, 1],
 ]
 
-RED2: List[List[int]] = [
+RED2: list[list[int]] = [
     [4, 25],
     [2, 4, 22],
     [1, 3, 6, 12, 2],
@@ -183,7 +188,7 @@ RED2: List[List[int]] = [
     [2],
 ]
 
-RED3: List[List[int]] = [
+RED3: list[list[int]] = [
     [17, 4],
     [17, 1, 3],
     [14, 2, 3],
@@ -221,7 +226,7 @@ RED3: List[List[int]] = [
     [4],
 ]
 
-BLUE1: List[List[int]] = [
+BLUE1: list[list[int]] = [
     [26],
     [1, 25],
     [1, 22, 1],
@@ -260,7 +265,7 @@ BLUE1: List[List[int]] = [
 ]
 
 
-BLUE2: List[List[int]] = [
+BLUE2: list[list[int]] = [
     [3, 2, 2, 1, 1, 11],
     [3, 3, 2, 1, 2, 11],
     [3, 4, 2, 3, 6, 2],
@@ -298,7 +303,7 @@ BLUE2: List[List[int]] = [
     [3, 4, 18],
 ]
 
-BLUE3: List[List[int]] = [
+BLUE3: list[list[int]] = [
     [30],
     [30],
     [15, 14],

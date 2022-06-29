@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Dict, List, Set, Tuple
 
 from ortools.sat.python import cp_model
 
@@ -18,7 +19,7 @@ class Coord:
 class Piece:
     # White indicates whether the cell in the bottom-left corner of the rectangle
     # bounding the piece must be white.
-    cells: Set[Coord]
+    cells: set[Coord]
     white: bool
 
     def rotate(self, turns: int) -> "Piece":
@@ -43,7 +44,7 @@ class Piece:
 
         return Piece(cells, white)
 
-    def rotations(self) -> List["Piece"]:
+    def rotations(self) -> list["Piece"]:
         pieces = [self.rotate(turns) for turns in range(4)]
         unique = []
         for piece in pieces:
@@ -55,7 +56,7 @@ class Piece:
         cells = {cell + shift for cell in self.cells}
         return Piece(cells, self.white)
 
-    def shifts(self) -> List["Piece"]:
+    def shifts(self) -> list["Piece"]:
         max_x = max(cell.x for cell in self.cells)
         max_y = max(cell.y for cell in self.cells)
 
@@ -70,7 +71,7 @@ class Piece:
 
         return pieces
 
-    def placements(self) -> List["Piece"]:
+    def placements(self) -> list["Piece"]:
         pieces = [piece for rotation in self.rotations() for piece in rotation.shifts()]
         return pieces
 
@@ -94,7 +95,7 @@ PIECES = [
 
 
 class SolutionPrinter(cp_model.CpSolverSolutionCallback):  # type: ignore[misc]
-    def __init__(self, covers: Dict[Tuple[int, int], cp_model.IntVar]):
+    def __init__(self, covers: dict[tuple[int, int], cp_model.IntVar]):
         super().__init__()
         self.covers = covers
         self.solution_count = 0
