@@ -11,7 +11,7 @@ class Coord:
     x: int
     y: int
 
-    def __add__(self, other: "Coord") -> "Coord":
+    def __add__(self, other: Coord) -> Coord:
         return Coord(self.x + other.x, self.y + other.y)
 
 
@@ -22,7 +22,7 @@ class Piece:
     cells: set[Coord]
     white: bool
 
-    def rotate(self, turns: int) -> "Piece":
+    def rotate(self, turns: int) -> Piece:
         max_x = max(cell.x for cell in self.cells)
         max_y = max(cell.y for cell in self.cells)
 
@@ -44,7 +44,7 @@ class Piece:
 
         return Piece(cells, white)
 
-    def rotations(self) -> list["Piece"]:
+    def rotations(self) -> list[Piece]:
         pieces = [self.rotate(turns) for turns in range(4)]
         unique = []
         for piece in pieces:
@@ -52,11 +52,11 @@ class Piece:
                 unique.append(piece)
         return unique
 
-    def add(self, shift: Coord) -> "Piece":
+    def add(self, shift: Coord) -> Piece:
         cells = {cell + shift for cell in self.cells}
         return Piece(cells, self.white)
 
-    def shifts(self) -> list["Piece"]:
+    def shifts(self) -> list[Piece]:
         max_x = max(cell.x for cell in self.cells)
         max_y = max(cell.y for cell in self.cells)
 
@@ -71,7 +71,7 @@ class Piece:
 
         return pieces
 
-    def placements(self) -> list["Piece"]:
+    def placements(self) -> list[Piece]:
         pieces = [piece for rotation in self.rotations() for piece in rotation.shifts()]
         return pieces
 
