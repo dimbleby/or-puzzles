@@ -123,8 +123,19 @@ def main() -> None:
     }
 
     # We must choose exactly one placement for each piece
-    for index, placements in possibilities.items():
-        model.Add(sum(choices[index, j] for j in range(len(placements))) == 1)
+    for i, placements in possibilities.items():
+        piece_choices = [choices[i, j] for j in range(len(placements))]
+        model.Add(sum(piece_choices) == 1)
+
+    # We must cover each cell exactly once.
+    for x in range(8):
+        for y in range(8):
+            cell_choices = [
+                choice
+                for (i, j), choice in choices.items()
+                if Coord(x, y) in possibilities[i][j].cells
+            ]
+            model.Add(sum(cell_choices) == 1)
 
     # What piece is covering cell x, y?
     covers = {
@@ -133,17 +144,10 @@ def main() -> None:
         for y in range(8)
     }
 
-    # Placing a piece covers cells - and prevents other cells from using that piece.
+    # Placing a piece covers cells.
     for (i, j), choice in choices.items():
-        placement = possibilities[i][j]
-        for x in range(8):
-            for y in range(8):
-                constraint = (
-                    covers[x, y] == i
-                    if Coord(x, y) in placement.cells
-                    else covers[x, y] != i
-                )
-                model.Add(constraint).OnlyEnforceIf(choice)
+        for cell in possibilities[i][j].cells:
+            model.Add(covers[cell.x, cell.y] == i).OnlyEnforceIf(choice)
 
     # Break rotational symmetry.
     model.Add(covers[7, 0] < covers[0, 7])
