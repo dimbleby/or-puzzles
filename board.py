@@ -150,7 +150,7 @@ def main() -> None:
             model.Add(sum(cell_choices) == 1)
 
     # Break rotational symmetry.
-    model.Add(covers[7, 0] < covers[0, 7])
+    model.Add(covers[0, 0] < covers[7, 7])
 
     # Solve.
     solution_printer = SolutionPrinter(covers)
