@@ -152,18 +152,9 @@ def main() -> None:
     # Break rotational symmetry.
     model.Add(covers[7, 0] < covers[0, 7])
 
-    # We'll fill the board from bottom left to top right.
-    tagged_covers = [(x + y, cover) for (x, y), cover in covers.items()]
-    tagged_covers.sort(key=lambda x: x[0])
-    sorted_covers = [cover for _tag, cover in tagged_covers]
-    model.AddDecisionStrategy(
-        sorted_covers, cp_model.CHOOSE_FIRST, cp_model.SELECT_MIN_VALUE
-    )
-
     # Solve.
     solution_printer = SolutionPrinter(covers)
     solver = cp_model.CpSolver()
-    solver.parameters.search_branching = cp_model.FIXED_SEARCH
     solver.parameters.enumerate_all_solutions = True
     solver.Solve(model, solution_printer)
     print(f"Found {solution_printer.solution_count} solutions")

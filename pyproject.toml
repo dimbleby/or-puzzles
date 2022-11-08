@@ -13,13 +13,14 @@ black = ">=22.10.0"
 flake8 = ">=5.0.4"
 flake8-type-checking = ">=2.2.0"
 isort = ">=5.10.1"
-mypy = ">=0.982"
+mypy = ">=0.990"
 
 [build-system]
 requires = ["poetry-core>=1.1.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
+file = "."
 enable_error_code = [
   "ignore-without-code",
   "redundant-expr",
