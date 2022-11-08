@@ -122,6 +122,18 @@ def main() -> None:
         for j in range(len(placements))
     }
 
+    # What piece is covering cell x, y?
+    covers = {
+        (x, y): model.NewIntVar(0, len(PIECES) - 1, f"cell_{x}_{y}")
+        for x in range(8)
+        for y in range(8)
+    }
+
+    # Placing a piece covers cells.
+    for (i, j), choice in choices.items():
+        for cell in possibilities[i][j].cells:
+            model.Add(covers[cell.x, cell.y] == i).OnlyEnforceIf(choice)
+
     # We must choose exactly one placement for each piece
     for i, placements in possibilities.items():
         piece_choices = [choices[i, j] for j in range(len(placements))]
@@ -136,18 +148,6 @@ def main() -> None:
                 if Coord(x, y) in possibilities[i][j].cells
             ]
             model.Add(sum(cell_choices) == 1)
-
-    # What piece is covering cell x, y?
-    covers = {
-        (x, y): model.NewIntVar(0, len(PIECES) - 1, f"cell_{x}_{y}")
-        for x in range(8)
-        for y in range(8)
-    }
-
-    # Placing a piece covers cells.
-    for (i, j), choice in choices.items():
-        for cell in possibilities[i][j].cells:
-            model.Add(covers[cell.x, cell.y] == i).OnlyEnforceIf(choice)
 
     # Break rotational symmetry.
     model.Add(covers[7, 0] < covers[0, 7])
