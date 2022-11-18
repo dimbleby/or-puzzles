@@ -2,8 +2,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING, Iterable
 
 from ortools.sat.python import cp_model
+
+if TYPE_CHECKING:
+    from collections.abc import Hashable
 
 
 @dataclass(frozen=True)
@@ -15,45 +19,54 @@ class Coord:
         return Coord(self.x + other.x, self.y + other.y)
 
 
-@dataclass
 class Piece:
-    # White indicates whether the cell in the bottom-left corner of the rectangle
-    # bounding the piece must be white.
-    cells: set[Coord]
-    white: bool
+    def __init__(self, cells: Iterable[Coord], white: bool) -> None:
+        # White indicates whether the cell in the bottom-left corner of the rectangle
+        # bounding the piece must be white.
+        self.cells = frozenset(cells)
+        self.white = white
+
+    def __key(self) -> tuple[Hashable, ...]:
+        return (self.cells, self.white)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Piece):
+            return NotImplemented
+
+        return self.__key() == other.__key()
+
+    def __hash__(self) -> int:
+        return hash(self.__key())
 
     def rotate(self, turns: int) -> Piece:
         max_x = max(cell.x for cell in self.cells)
         max_y = max(cell.y for cell in self.cells)
+        cells: Iterable[Coord]
 
         if turns == 0:
             cells = self.cells
             white = self.white
 
         elif turns == 1:
-            cells = {Coord(cell.y, max_x - cell.x) for cell in self.cells}
+            cells = (Coord(cell.y, max_x - cell.x) for cell in self.cells)
             white = self.white ^ (max_x % 2 == 1)
 
         elif turns == 2:
-            cells = {Coord(max_x - cell.x, max_y - cell.y) for cell in self.cells}
+            cells = (Coord(max_x - cell.x, max_y - cell.y) for cell in self.cells)
             white = self.white ^ ((max_x + max_y) % 2 == 1)
 
         elif turns == 3:
-            cells = {Coord(max_y - cell.y, cell.x) for cell in self.cells}
+            cells = (Coord(max_y - cell.y, cell.x) for cell in self.cells)
             white = self.white ^ (max_y % 2 == 1)
 
         return Piece(cells, white)
 
-    def rotations(self) -> list[Piece]:
-        pieces = [self.rotate(turns) for turns in range(4)]
-        unique = []
-        for piece in pieces:
-            if piece not in unique:
-                unique.append(piece)
-        return unique
+    def rotations(self) -> set[Piece]:
+        pieces = {self.rotate(turns) for turns in range(4)}
+        return pieces
 
     def add(self, shift: Coord) -> Piece:
-        cells = {cell + shift for cell in self.cells}
+        cells = (cell + shift for cell in self.cells)
         return Piece(cells, self.white)
 
     def shifts(self) -> list[Piece]:
@@ -61,12 +74,12 @@ class Piece:
         max_y = max(cell.y for cell in self.cells)
 
         # Here is where we enforce matching colours.
-        bottom_lefts = [
+        bottom_lefts = (
             Coord(x, y)
             for x in range(8 - max_x)
             for y in range(8 - max_y)
             if self.white ^ ((x + y) % 2 == 0)
-        ]
+        )
         pieces = [self.add(bottom_left) for bottom_left in bottom_lefts]
 
         return pieces
