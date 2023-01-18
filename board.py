@@ -150,7 +150,7 @@ def main() -> None:
     # We must choose exactly one placement for each piece
     for i, placements in possibilities.items():
         piece_choices = [choices[i, j] for j in range(len(placements))]
-        model.Add(sum(piece_choices) == 1)
+        model.AddExactlyOne(piece_choices)
 
     # We must cover each cell exactly once.
     for x in range(8):
@@ -160,7 +160,7 @@ def main() -> None:
                 for (i, j), choice in choices.items()
                 if Coord(x, y) in possibilities[i][j].cells
             ]
-            model.Add(sum(cell_choices) == 1)
+            model.AddExactlyOne(cell_choices)
 
     # Break rotational symmetry.
     model.Add(covers[0, 0] < covers[7, 7])
