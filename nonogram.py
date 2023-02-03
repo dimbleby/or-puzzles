@@ -42,7 +42,7 @@ def constrain_line(
     # - else (we're on a filled square) we're only allowed to move along if we get the
     #   appropriate input.
     transitions = {}
-    for (state, label) in enumerate(labels):
+    for state, label in enumerate(labels):
         if state == final_state:
             transitions[state, blank] = state
         elif label == blank:
@@ -83,16 +83,16 @@ def solve_puzzle(
     }
 
     # Given clues are given.
-    for (i, j) in givens:
+    for i, j in givens:
         model.Add(squares[i, j] == 1)
 
     # Row constraints must be satisfied.
-    for (i, clues) in enumerate(row_clues):
+    for i, clues in enumerate(row_clues):
         line = [squares[i, j] for j in range(num_columns)]
         constrain_line(model, line, clues)
 
     # Column constraints must be satisfied.
-    for (j, clues) in enumerate(column_clues):
+    for j, clues in enumerate(column_clues):
         line = [squares[i, j] for i in range(num_rows)]
         constrain_line(model, line, clues, invert=invert_columns)
 
