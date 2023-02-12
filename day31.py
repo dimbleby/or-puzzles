@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import ClassVar
 
 from attrs import frozen
@@ -57,7 +58,7 @@ class SolutionPrinter(cp_model.CpSolverSolutionCallback):  # type: ignore[misc]
 
 
 def solve() -> None:
-    with open("day31.txt", encoding="utf-8") as f:
+    with Path("day31.txt").open(encoding="utf-8") as f:
         data = f.read()
 
     tiles = [Tile.from_string(line) for line in data.splitlines()]
