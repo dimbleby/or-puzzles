@@ -60,7 +60,7 @@ def constrain_line(
 def solve_puzzle(
     row_clues: Iterable[Iterable[int]],
     column_clues: Iterable[Iterable[int]],
-    givens: Iterable[tuple[int, int]],
+    givens: Iterable[tuple[int, int]] = (),
     invert_columns: bool = False,
 ) -> None:
     """Solve a puzzle"""
@@ -342,6 +342,6 @@ BLUE3: list[list[int]] = [
 ]
 
 if __name__ == "__main__":
-    solve_puzzle(RED1, BLUE3, [], invert_columns=True)
-    solve_puzzle(RED2, BLUE1, [], invert_columns=True)
-    solve_puzzle(RED3, BLUE2, [], invert_columns=True)
+    solve_puzzle(RED1, BLUE3, invert_columns=True)
+    solve_puzzle(RED2, BLUE1, invert_columns=True)
+    solve_puzzle(RED3, BLUE2, invert_columns=True)
