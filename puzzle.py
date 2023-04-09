@@ -32,14 +32,10 @@ def solve_puzzle() -> None:
     model.AddAllDifferent(hometowns)
 
     # collecting-twigs next to kensington
-    diff_collecting_kensington = model.NewIntVar(-4, 4, "diff_collecting_kensington")
-    model.Add(diff_collecting_kensington == collecting - kensington)
-    model.AddAbsEquality(1, diff_collecting_kensington)
+    model.AddAbsEquality(1, collecting - kensington)
 
     # bird-baths next to brentford (which is in hounslow)
-    diff_birdbaths_hounslow = model.NewIntVar(-4, 4, "diff_birdbaths_hounslow")
-    model.Add(diff_birdbaths_hounslow == bird_baths - hounslow)
-    model.AddAbsEquality(1, diff_birdbaths_hounslow)
+    model.AddAbsEquality(1, bird_baths - hounslow)
 
     # spain and lakes
     model.Add(lake == spain)
