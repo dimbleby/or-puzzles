@@ -10,7 +10,7 @@ authors = ["David Hotham <david.hotham@blueyonder.co.uk>"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
-attrs = "^22.2.0"
+attrs = "^23.1.0"
 ortools = "^9.6.2534"
 
 [tool.poetry.group.lint.dependencies]
