@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from ortools.sat.python import cp_model
+from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Hashable, Iterable
@@ -29,12 +30,14 @@ class Piece:
     def __key(self) -> tuple[Hashable, ...]:
         return (self.cells, self.white)
 
+    @override
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Piece):
             return NotImplemented
 
         return self.__key() == other.__key()
 
+    @override
     def __hash__(self) -> int:
         return hash(self.__key())
 
