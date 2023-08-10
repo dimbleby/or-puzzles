@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from attrs import frozen
 from ortools.sat.python import cp_model
 from typing_extensions import override
 
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from collections.abc import Hashable, Iterable
 
 
-@dataclass(frozen=True)
+@frozen
 class Coord:
     x: int
     y: int
