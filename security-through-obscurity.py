@@ -14,9 +14,14 @@
 #
 # - the face value of a card is card % 10
 # - the suit of a card is card // 10
-from collections.abc import Iterable
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from ortools.sat.python import cp_model
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 KNIGHT_MOVES = [
     (-1, -2),
