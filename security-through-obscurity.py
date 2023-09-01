@@ -85,8 +85,8 @@ def solve() -> None:
     model.AddAllDifferent(next_hop)
 
     for i in range(36):
-        candidates = list(neighbours(i))
-        domain = cp_model.Domain.FromValues(candidates)
+        candidates = neighbours(i)
+        domain = cp_model.Domain.FromValues(list(candidates))
         model.AddLinearExpressionInDomain(next_hop[i], domain)
         model.AddElement(route[i - 1], next_hop, route[i])
 
@@ -125,7 +125,7 @@ def solve() -> None:
     model.Add(suits[-2] == 1)
     model.Add(suits[-1] == 0)
 
-    #  They all are different digits. Diamond is highest.
+    # They all are different digits. Diamond is highest.
     model.AddAllDifferent(faces[-4:])
     model.Add(faces[-2] > faces[-1])
     model.Add(faces[-2] > faces[-3])
@@ -180,7 +180,16 @@ def solve() -> None:
         this_sum = sum(faces[r * 6 : (r + 1) * 6])
         model.Add(prev_sum < this_sum)
 
-    # Break left-right symmetry.
+    # After the event we learned that the clue we missed was:
+    #
+    # Ace of clubs is in the top-left corner, six of spades is in the top-right. The
+    # corners total fifteen.
+    #
+    # model.Add(cards[0] == 1)
+    # model.Add(cards[5] == 36)
+    # model.Add(sum(faces[i] for i in (0, 5, 30, 35)) == 15)
+    #
+    # Not having that we instead just broke left-right symmetry:
     model.Add(cards[0] < cards[5])
 
     # Solve.
