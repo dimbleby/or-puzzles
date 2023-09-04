@@ -65,8 +65,7 @@ class Piece:
         return Piece(cells, white)
 
     def rotations(self) -> set[Piece]:
-        pieces = {self.rotate(turns) for turns in range(4)}
-        return pieces
+        return {self.rotate(turns) for turns in range(4)}
 
     def add(self, shift: Coord) -> Piece:
         cells = (cell + shift for cell in self.cells)
@@ -83,13 +82,11 @@ class Piece:
             for y in range(8 - max_y)
             if self.white ^ ((x + y) % 2 == 0)
         )
-        pieces = [self.add(bottom_left) for bottom_left in bottom_lefts]
+        return [self.add(bottom_left) for bottom_left in bottom_lefts]
 
-        return pieces
 
     def placements(self) -> list[Piece]:
-        pieces = [piece for rotation in self.rotations() for piece in rotation.shifts()]
-        return pieces
+        return [piece for rotation in self.rotations() for piece in rotation.shifts()]
 
 
 PIECES = [

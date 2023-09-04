@@ -52,6 +52,7 @@ select = [
   "PLE", # pylint errors
   "PLW", # pylint warnings
   "PTH", # flake8-use-pathlib
+  "RET", # flake8-return
   "RUF", # ruff
   "S",   # flake8-bandit
   "SIM", # flake8-simplify
