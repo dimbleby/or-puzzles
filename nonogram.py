@@ -109,7 +109,7 @@ def solve_puzzle(
     else:
         print("No solution found")
 
-    print("")
+    print()
 
 
 RED1: list[list[int]] = [

@@ -84,7 +84,6 @@ class Piece:
         )
         return [self.add(bottom_left) for bottom_left in bottom_lefts]
 
-
     def placements(self) -> list[Piece]:
         return [piece for rotation in self.rotations() for piece in rotation.shifts()]
 
