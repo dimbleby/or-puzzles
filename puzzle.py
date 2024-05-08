@@ -10,7 +10,7 @@ def solve_puzzle() -> None:
     model = cp_model.CpModel()
 
     # Create variables.
-    [canaries, spain, switzerland, czech_republic, bulgaria] = range(5)
+    [canaries, spain, switzerland, _czech_republic, _bulgaria] = range(5)
 
     nests = [model.NewIntVar(0, 4, f"nests{i}") for i in range(5)]
     [chimney, hedge, house, lake, straw] = nests
@@ -19,13 +19,13 @@ def solve_puzzle() -> None:
     [finch, mallard, starling, swallow, woodpecker] = breeds
 
     foods = [model.NewIntVar(0, 4, f"foods{i}") for i in range(5)]
-    [bread, cake, cookies, croissants, scones] = foods
+    [_bread, cake, cookies, croissants, scones] = foods
 
     activities = [model.NewIntVar(0, 4, f"activities{i}") for i in range(5)]
     [bird_baths, collecting, pecking, stealing, squawking] = activities
 
     hometowns = [model.NewIntVar(0, 4, f"hometowns{i}") for i in range(5)]
-    [barking, camden, ealing, hounslow, kensington] = hometowns
+    [barking, _camden, ealing, hounslow, kensington] = hometowns
 
     model.AddAllDifferent(nests)
     model.AddAllDifferent(breeds)
@@ -78,7 +78,7 @@ def solve_puzzle() -> None:
     # We want to know everything...
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
-    if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):
+    if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):  # type: ignore[comparison-overlap]
         print()
         print("nests:", [solver.Value(nests[i]) + 1 for i in range(5)])
         print("breeds:", [solver.Value(breeds[i]) + 1 for i in range(5)])

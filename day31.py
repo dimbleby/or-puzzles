@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import itertools
 from pathlib import Path
 from typing import ClassVar
 
@@ -25,7 +26,7 @@ class Tile:
         return Tile(symbols)
 
 
-class SolutionPrinter(cp_model.CpSolverSolutionCallback):  # type: ignore[misc]
+class SolutionPrinter(cp_model.CpSolverSolutionCallback):
     def __init__(
         self,
         choices: dict[tuple[int, int, int, int], cp_model.IntVar],
@@ -39,7 +40,7 @@ class SolutionPrinter(cp_model.CpSolverSolutionCallback):  # type: ignore[misc]
         for y in reversed(range(7)):
             if y != 6:
                 tiles = [self.get_tile(x, y) for x in range(6)]
-                pretty_row = [f"{tile+1:02d}" for tile in tiles]
+                pretty_row = [f"{tile + 1:02d}" for tile in tiles]
                 print(f" {' '.join(pretty_row)}")
 
             corners = [self.get_corner(x, y) for x in range(7)]
@@ -97,16 +98,14 @@ def solve() -> None:
         )
 
     # We must make exactly one choice for each square.
-    for x in range(6):
-        for y in range(6):
-            model.AddExactlyOne(
-                choices[i, x, y, r] for i in range(len(tiles)) for r in range(4)
-            )
+    for x, y in itertools.product(range(6), range(6)):
+        model.AddExactlyOne(
+            choices[i, x, y, r] for i in range(len(tiles)) for r in range(4)
+        )
 
     # Each corner contains exactly one symbol.
-    for x in range(7):
-        for y in range(7):
-            model.AddExactlyOne(corners[x, y, s] for s in range(7))
+    for x, y in itertools.product(range(7), range(7)):
+        model.AddExactlyOne(corners[x, y, s] for s in range(7))
 
     # Solve.
     solution_printer = SolutionPrinter(choices, corners)

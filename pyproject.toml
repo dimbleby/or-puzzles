@@ -3,16 +3,12 @@ requires = ["poetry-core>=1.1.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "or-puzzles"
-version = "0.1.0"
-description = ""
-authors = ["David Hotham <david.hotham@blueyonder.co.uk>"]
+package-mode = false
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
+python = "^3.12"
 attrs = "^23.1.0"
-ortools = "^9.6.2534"
-typing-extensions = "^4.7.1"
+ortools = "^9.10"
 
 [tool.poetry.group.lint.dependencies]
 mypy = ">=1.5.0"
@@ -29,12 +25,8 @@ enable_error_code = [
 show_error_codes = true
 strict = true
 
-[[tool.mypy.overrides]]
-module = "ortools.*"
-ignore_missing_imports = true
-
 [tool.ruff]
-target-version = "py310"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = [
@@ -42,35 +34,45 @@ select = [
   "ARG",   # flake8-unused-arguments
   "ASYNC", # flake8-async
   "B",     # flake8-bugbear
+  "BLE",   # flake8-blind-except
   "C4",    # flake8-comprehensions
   "DTZ",   # flake8-datetimez
   "E",     # pycodestyle
   "EM",    # flake8-errmsg
   "EXE",   # flake8-executable
   "F",     # pyflakes
+  "FLY",   # flynt
   "FURB",  # refurb
   "I",     # isort
   "ICN",   # flake8-import-conventions
   "ISC",   # flake8-implicit-string-concat
   "N",     # pep8-naming
+  "PERF",  # perflint
   "PIE",   # flake8-pie
   "PLC",   # pylint conventions
   "PLE",   # pylint errors
   "PLW",   # pylint warnings
   "PTH",   # flake8-use-pathlib
+  "Q",     # flake8-quotes
   "RET",   # flake8-return
   "RSE",   # flake8-raise
   "RUF",   # ruff
   "S",     # flake8-bandit
   "SIM",   # flake8-simplify
+  "SLF",   # flake8-self
   "TCH",   # flake8-type-checking
   "TID",   # flake8-tidy-imports
+  "TRY",   # tryceratops
   "UP",    # pyupgrade
   "W",     # pycodestyle
 ]
 ignore = [
-  "E203", # whitespace before ':'
-  "S101", # assert-used
+  "E203",  # whitespace before ':'
+  "S101",  # assert-used
+  "UP040", # 'type' keyword - https://github.com/python/mypy/issues/15238
+]
+extend-safe-fixes = [
+  "TCH", # flake8-type-checking
 ]
 unfixable = [
   "F841", # unused-variable

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import itertools
+from typing import TYPE_CHECKING, override
 
 from attrs import frozen
 from ortools.sat.python import cp_model
-from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Hashable, Iterable
@@ -58,7 +58,8 @@ class Piece:
             cells = (Coord(max_x - cell.x, max_y - cell.y) for cell in self.cells)
             white = self.white ^ ((max_x + max_y) % 2 == 1)
 
-        elif turns == 3:
+        else:
+            assert turns == 3
             cells = (Coord(max_y - cell.y, cell.x) for cell in self.cells)
             white = self.white ^ (max_y % 2 == 1)
 
@@ -106,7 +107,7 @@ PIECES = [
 ]
 
 
-class SolutionPrinter(cp_model.CpSolverSolutionCallback):  # type: ignore[misc]
+class SolutionPrinter(cp_model.CpSolverSolutionCallback):
     def __init__(self, covers: dict[tuple[int, int], cp_model.IntVar]):
         super().__init__()
         self.covers = covers
@@ -152,14 +153,13 @@ def main() -> None:
         model.AddExactlyOne(piece_choices)
 
     # We must cover each cell exactly once.
-    for x in range(8):
-        for y in range(8):
-            cell_choices = [
-                choice
-                for (i, j), choice in choices.items()
-                if Coord(x, y) in possibilities[i][j].cells
-            ]
-            model.AddExactlyOne(cell_choices)
+    for x, y in itertools.product(range(8), range(8)):
+        cell_choices = [
+            choice
+            for (i, j), choice in choices.items()
+            if Coord(x, y) in possibilities[i][j].cells
+        ]
+        model.AddExactlyOne(cell_choices)
 
     # Break rotational symmetry.
     model.Add(covers[0, 0] < covers[7, 7])

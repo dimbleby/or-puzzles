@@ -44,7 +44,7 @@ class Solver:
     def solve(self) -> None:
         solver = cp_model.CpSolver()
         status = solver.Solve(self.model)
-        if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):
+        if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):  # type: ignore[comparison-overlap]
             for c in ALPHABET:
                 print(f"{c} = {solver.Value(self.letters[c])}")
 

@@ -98,10 +98,10 @@ def solve_puzzle(
 
     # Find a solution.
     solver = cp_model.CpSolver()
-    solved = solver.Solve(model)
+    status = solver.Solve(model)
 
     # Pretty print the solution.
-    if solved:
+    if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):  # type: ignore[comparison-overlap]
         for i in range(num_rows):
             row = [solver.Value(squares[i, j]) for j in range(num_columns)]
             pretty_row = ["#" if filled else " " for filled in row]

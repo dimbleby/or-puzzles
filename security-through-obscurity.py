@@ -52,7 +52,7 @@ def neighbours(square: int) -> Iterable[int]:
         yield new_square
 
 
-class SolutionPrinter(cp_model.CpSolverSolutionCallback):  # type: ignore[misc]
+class SolutionPrinter(cp_model.CpSolverSolutionCallback):
     def __init__(self, cards: list[cp_model.IntVar]):
         super().__init__()
         self.cards = cards
@@ -175,8 +175,9 @@ def solve() -> None:
         model.AddLinearExpressionInDomain(faces[i], evens)
 
     # Sum of each row is greater than the row above it.
+    this_sum = sum(faces[:6])
     for r in range(1, 6):
-        prev_sum = sum(faces[(r - 1) * 6 : r * 6])
+        prev_sum = this_sum
         this_sum = sum(faces[r * 6 : (r + 1) * 6])
         model.Add(prev_sum < this_sum)
 
