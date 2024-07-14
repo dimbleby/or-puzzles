@@ -72,6 +72,18 @@ def solve_puzzle(
     num_rows = len(row_clues)
     num_columns = len(column_clues)
 
+    # Sanity check.
+    row_fills = (sum(clues) for clues in row_clues)
+    column_fills = (sum(clues) for clues in column_clues)
+    if invert_columns:
+        column_fills = (num_rows - filled for filled in column_fills)
+
+    row_wise = sum(row_fills)
+    column_wise = sum(column_fills)
+    if row_wise != column_wise:
+        print(f"{row_wise} row fills != {column_wise} column fills")
+        return
+
     # Prepare a model.
     model = cp_model.CpModel()
 
@@ -104,7 +116,7 @@ def solve_puzzle(
     if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):  # type: ignore[comparison-overlap]
         for i in range(num_rows):
             row = [solver.Value(squares[i, j]) for j in range(num_columns)]
-            pretty_row = ["#" if filled else " " for filled in row]
+            pretty_row = ["█" if filled else " " for filled in row]
             print("".join(pretty_row))
     else:
         print("No solution found")
@@ -112,7 +124,7 @@ def solve_puzzle(
     print()
 
 
-RED1: list[list[int]] = [
+RED1 = [
     [1],
     [3],
     [4],
@@ -150,7 +162,7 @@ RED1: list[list[int]] = [
     [2, 1],
 ]
 
-RED2: list[list[int]] = [
+RED2 = [
     [4, 25],
     [2, 4, 22],
     [1, 3, 6, 12, 2],
@@ -188,7 +200,7 @@ RED2: list[list[int]] = [
     [2],
 ]
 
-RED3: list[list[int]] = [
+RED3 = [
     [17, 4],
     [17, 1, 3],
     [14, 2, 3],
@@ -226,7 +238,7 @@ RED3: list[list[int]] = [
     [4],
 ]
 
-BLUE1: list[list[int]] = [
+BLUE1 = [
     [26],
     [1, 25],
     [1, 22, 1],
@@ -265,7 +277,7 @@ BLUE1: list[list[int]] = [
 ]
 
 
-BLUE2: list[list[int]] = [
+BLUE2 = [
     [3, 2, 2, 1, 1, 11],
     [3, 3, 2, 1, 2, 11],
     [3, 4, 2, 3, 6, 2],
@@ -303,7 +315,7 @@ BLUE2: list[list[int]] = [
     [3, 4, 18],
 ]
 
-BLUE3: list[list[int]] = [
+BLUE3 = [
     [30],
     [30],
     [15, 14],
@@ -341,7 +353,67 @@ BLUE3: list[list[int]] = [
     [30],
 ]
 
+L31_ROWS = [
+    [2],
+    [1, 2, 1],
+    [6],
+    [4],
+    [2, 2, 2, 2],
+    [2, 2, 2, 2],
+    [1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1],
+    [6, 6, 6, 6],
+    [1, 4, 4, 1],
+    [1, 2, 1, 2, 2, 2, 2, 1, 2, 1],
+    [6, 2, 6],
+    [1, 1, 1, 2, 1, 1, 1],
+    [1, 4, 6, 4, 1],
+    [3, 1, 4, 1, 3],
+    [2, 2, 2, 2, 2, 2],
+    [1, 3, 1, 1, 3, 1],
+    [4, 2, 2, 4],
+    [4, 4, 4],
+    [1, 1, 4, 1, 1],
+    [5, 2, 5],
+    [3, 4, 3],
+    [2, 4, 2],
+    [6],
+]
+
+L31_COLS = [
+    [2, 2],
+    [1, 1, 2, 2],
+    [7, 1, 1, 2],
+    [2, 1, 6, 1, 1],
+    [1, 1, 1, 6],
+    [2, 2, 1, 1, 1, 1],
+    [2, 2, 1, 2],
+    [2, 1, 2, 2, 1],
+    [3, 2, 2],
+    [4, 1],
+    [4],
+    [3],
+    [2, 1, 2, 1, 2, 1, 1],
+    [3, 3, 2, 3],
+    [4, 4, 6],
+    [4, 4, 6],
+    [3, 3, 2, 3],
+    [2, 1, 2, 1, 2, 1, 1],
+    [3],
+    [4],
+    [4, 1],
+    [3, 2, 2],
+    [2, 1, 2, 2, 1],
+    [2, 2, 1, 2],
+    [2, 2, 1, 1, 1, 1],
+    [1, 1, 1, 6],
+    [2, 1, 6, 1, 1],
+    [7, 1, 1, 2],
+    [1, 1, 2, 2],
+    [2, 2],
+]
+
 if __name__ == "__main__":
-    solve_puzzle(RED1, BLUE3, invert_columns=True)
-    solve_puzzle(RED2, BLUE1, invert_columns=True)
-    solve_puzzle(RED3, BLUE2, invert_columns=True)
+    solve_puzzle(L31_ROWS, L31_COLS)
+    # solve_puzzle(RED1, BLUE3, invert_columns=True)
+    # solve_puzzle(RED2, BLUE1, invert_columns=True)
+    # solve_puzzle(RED3, BLUE2, invert_columns=True)
