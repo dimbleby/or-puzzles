@@ -12,16 +12,16 @@ if TYPE_CHECKING:
 
 
 @frozen
-class Coord:
+class Cell:
     x: int
     y: int
 
-    def __add__(self, other: Coord) -> Coord:
-        return Coord(self.x + other.x, self.y + other.y)
+    def __add__(self, other: Cell) -> Cell:
+        return Cell(self.x + other.x, self.y + other.y)
 
 
 class Piece:
-    def __init__(self, cells: Iterable[Coord], white: bool) -> None:
+    def __init__(self, cells: Iterable[Cell], *, white: bool) -> None:
         # White indicates whether the cell in the bottom-left corner of the rectangle
         # bounding the piece must be white.
         self.cells = frozenset(cells)
@@ -44,33 +44,33 @@ class Piece:
     def rotate(self, turns: int) -> Piece:
         max_x = max(cell.x for cell in self.cells)
         max_y = max(cell.y for cell in self.cells)
-        cells: Iterable[Coord]
+        cells: Iterable[Cell]
 
         if turns == 0:
             cells = self.cells
             white = self.white
 
         elif turns == 1:
-            cells = (Coord(cell.y, max_x - cell.x) for cell in self.cells)
+            cells = (Cell(cell.y, max_x - cell.x) for cell in self.cells)
             white = self.white ^ (max_x % 2 == 1)
 
         elif turns == 2:
-            cells = (Coord(max_x - cell.x, max_y - cell.y) for cell in self.cells)
+            cells = (Cell(max_x - cell.x, max_y - cell.y) for cell in self.cells)
             white = self.white ^ ((max_x + max_y) % 2 == 1)
 
         else:
             assert turns == 3
-            cells = (Coord(max_y - cell.y, cell.x) for cell in self.cells)
+            cells = (Cell(max_y - cell.y, cell.x) for cell in self.cells)
             white = self.white ^ (max_y % 2 == 1)
 
-        return Piece(cells, white)
+        return Piece(cells, white=white)
 
     def rotations(self) -> set[Piece]:
         return {self.rotate(turns) for turns in range(4)}
 
-    def add(self, shift: Coord) -> Piece:
+    def add(self, shift: Cell) -> Piece:
         cells = (cell + shift for cell in self.cells)
-        return Piece(cells, self.white)
+        return Piece(cells, white=self.white)
 
     def shifts(self) -> list[Piece]:
         max_x = max(cell.x for cell in self.cells)
@@ -78,7 +78,7 @@ class Piece:
 
         # Here is where we enforce matching colours.
         bottom_lefts = (
-            Coord(x, y)
+            Cell(x, y)
             for x in range(8 - max_x)
             for y in range(8 - max_y)
             if self.white ^ ((x + y) % 2 == 0)
@@ -90,25 +90,25 @@ class Piece:
 
 
 PIECES = [
-    Piece({Coord(0, 0), Coord(0, 1), Coord(1, 1), Coord(2, 1)}, False),
-    Piece({Coord(0, 0), Coord(1, 0), Coord(1, 1), Coord(2, 1)}, False),
-    Piece({Coord(0, 1), Coord(1, 1), Coord(2, 0), Coord(2, 1), Coord(3, 1)}, True),
-    Piece({Coord(0, 1), Coord(1, 1), Coord(2, 0), Coord(2, 1)}, True),
-    Piece({Coord(0, 1), Coord(1, 0), Coord(1, 1), Coord(2, 0), Coord(3, 0)}, False),
-    Piece({Coord(0, 1), Coord(1, 1), Coord(2, 1), Coord(3, 0), Coord(3, 1)}, False),
-    Piece({Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(2, 1), Coord(3, 0)}, True),
-    Piece({Coord(0, 1), Coord(0, 2), Coord(1, 1), Coord(2, 0), Coord(2, 1)}, True),
-    Piece({Coord(0, 0), Coord(1, 0), Coord(2, 0), Coord(3, 0), Coord(3, 1)}, False),
-    Piece({Coord(0, 0), Coord(0, 1), Coord(1, 1), Coord(2, 1), Coord(2, 2)}, False),
-    Piece({Coord(0, 0), Coord(1, 0), Coord(1, 1), Coord(2, 1), Coord(3, 1)}, False),
-    Piece({Coord(0, 0), Coord(0, 1), Coord(1, 1), Coord(1, 2), Coord(2, 2)}, True),
-    Piece({Coord(0, 0), Coord(1, 0), Coord(1, 1)}, True),
-    Piece({Coord(0, 0), Coord(1, 0), Coord(1, 1), Coord(2, 0)}, False),
+    Piece({Cell(0, 0), Cell(0, 1), Cell(1, 1), Cell(2, 1)}, white=False),
+    Piece({Cell(0, 0), Cell(1, 0), Cell(1, 1), Cell(2, 1)}, white=False),
+    Piece({Cell(0, 1), Cell(1, 1), Cell(2, 0), Cell(2, 1), Cell(3, 1)}, white=True),
+    Piece({Cell(0, 1), Cell(1, 1), Cell(2, 0), Cell(2, 1)}, white=True),
+    Piece({Cell(0, 1), Cell(1, 0), Cell(1, 1), Cell(2, 0), Cell(3, 0)}, white=False),
+    Piece({Cell(0, 1), Cell(1, 1), Cell(2, 1), Cell(3, 0), Cell(3, 1)}, white=False),
+    Piece({Cell(0, 0), Cell(1, 0), Cell(2, 0), Cell(2, 1), Cell(3, 0)}, white=True),
+    Piece({Cell(0, 1), Cell(0, 2), Cell(1, 1), Cell(2, 0), Cell(2, 1)}, white=True),
+    Piece({Cell(0, 0), Cell(1, 0), Cell(2, 0), Cell(3, 0), Cell(3, 1)}, white=False),
+    Piece({Cell(0, 0), Cell(0, 1), Cell(1, 1), Cell(2, 1), Cell(2, 2)}, white=False),
+    Piece({Cell(0, 0), Cell(1, 0), Cell(1, 1), Cell(2, 1), Cell(3, 1)}, white=False),
+    Piece({Cell(0, 0), Cell(0, 1), Cell(1, 1), Cell(1, 2), Cell(2, 2)}, white=True),
+    Piece({Cell(0, 0), Cell(1, 0), Cell(1, 1)}, white=True),
+    Piece({Cell(0, 0), Cell(1, 0), Cell(1, 1), Cell(2, 0)}, white=False),
 ]
 
 
 class SolutionPrinter(cp_model.CpSolverSolutionCallback):
-    def __init__(self, covers: dict[tuple[int, int], cp_model.IntVar]):
+    def __init__(self, covers: dict[tuple[int, int], cp_model.IntVar]) -> None:
         super().__init__()
         self.covers = covers
         self.solution_count = 0
@@ -157,7 +157,7 @@ def main() -> None:
         cell_choices = [
             choice
             for (i, j), choice in choices.items()
-            if Coord(x, y) in possibilities[i][j].cells
+            if Cell(x, y) in possibilities[i][j].cells
         ]
         model.AddExactlyOne(cell_choices)
 

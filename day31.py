@@ -31,7 +31,7 @@ class SolutionPrinter(cp_model.CpSolverSolutionCallback):
         self,
         choices: dict[tuple[int, int, int, int], cp_model.IntVar],
         corners: dict[tuple[int, int, int], cp_model.IntVar],
-    ):
+    ) -> None:
         super().__init__()
         self.choices = choices
         self.corners = corners

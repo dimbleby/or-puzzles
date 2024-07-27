@@ -13,6 +13,7 @@ def constrain_line(
     model: cp_model.CpModel,
     line: list[cp_model.IntVar],
     clues: Iterable[int],
+    *,
     invert: bool = False,
 ) -> None:
     """Constrain a line so that it satisfies the description of it in the clues"""
@@ -61,6 +62,7 @@ def solve_puzzle(
     row_clues: Iterable[Iterable[int]],
     column_clues: Iterable[Iterable[int]],
     givens: Iterable[tuple[int, int]] = (),
+    *,
     invert_columns: bool = False,
 ) -> None:
     """Solve a puzzle"""

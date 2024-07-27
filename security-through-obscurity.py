@@ -53,7 +53,7 @@ def neighbours(square: int) -> Iterable[int]:
 
 
 class SolutionPrinter(cp_model.CpSolverSolutionCallback):
-    def __init__(self, cards: list[cp_model.IntVar]):
+    def __init__(self, cards: list[cp_model.IntVar]) -> None:
         super().__init__()
         self.cards = cards
 
