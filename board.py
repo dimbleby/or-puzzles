@@ -2,16 +2,16 @@
 from __future__ import annotations
 
 import itertools
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, override
 
-from attrs import frozen
 from ortools.sat.python import cp_model
 
 if TYPE_CHECKING:
     from collections.abc import Hashable, Iterable
 
 
-@frozen
+@dataclass(frozen=True)
 class Cell:
     x: int
     y: int

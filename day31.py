@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import itertools
+from dataclasses import dataclass
 from pathlib import Path
 from typing import ClassVar
 
-from attrs import frozen
 from ortools.sat.python import cp_model
 
 
-@frozen
+@dataclass(frozen=True)
 class Tile:
     LETTERS: ClassVar[str] = "BCFLMRT"
     symbols: list[int]
