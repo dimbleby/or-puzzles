@@ -59,8 +59,8 @@ class SolutionPrinter(cp_model.CpSolverSolutionCallback):
 
 
 def solve() -> None:
-    with Path("day31.txt").open(encoding="utf-8") as f:
-        data = f.read()
+    puzzle = Path(__file__).parent / "day31.txt"
+    data = puzzle.read_text(encoding="utf-8")
 
     tiles = [Tile.from_string(line) for line in data.splitlines()]
 

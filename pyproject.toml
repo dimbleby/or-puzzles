@@ -1,17 +1,30 @@
+[project]
+name = "or-puzzles"
+version = "0.1.0"
+description = "Some puzzles solved using ortools"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "ortools>=9.10.4067",
+]
+
+[project.scripts]
+alphabet = "or_puzzles:alphabet.solve_puzzle"
+board = "or_puzzles:board.main"
+day31 = "or_puzzles:day31.solve"
+nonogram = "or_puzzles:nonogram.main"
+puzzle = "or_puzzles:puzzle.solve_puzzle"
+security-through-obscurity = "or_puzzles:security_through_obscurity.solve"
+
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
-package-mode = false
-
-[tool.poetry.dependencies]
-python = "^3.12"
-ortools = "^9.10"
-
-[tool.poetry.group.lint.dependencies]
-mypy = ">=1.5.0"
-ruff = ">=0.1.3"
+[tool.uv]
+dev-dependencies = [
+  "ruff>=0.5.6",
+  "mypy>=1.11.1",
+]
 
 [tool.mypy]
 files = "."
