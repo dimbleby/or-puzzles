@@ -42,20 +42,19 @@ def constrain_line(
     #
     # - else (we're on a filled square) we're only allowed to move along if we get the
     #   appropriate input.
-    transitions = {}
+    transitions = []
     for state, label in enumerate(labels):
         if state == final_state:
-            transitions[state, blank] = state
+            transitions.append((state, blank, state))
         elif label == blank:
-            transitions[state, blank] = state
-            transitions[state, square] = state + 1
+            transitions.append((state, blank, state))
+            transitions.append((state, square, state + 1))
         else:
             next_label = labels[state + 1]
-            transitions[state, next_label] = state + 1
+            transitions.append((state, next_label, state + 1))
 
     # Add the constraint to the model.
-    tuples = [(old, filled, new) for ((old, filled), new) in transitions.items()]
-    model.AddAutomaton(line, initial_state, [final_state], tuples)
+    model.AddAutomaton(line, initial_state, [final_state], transitions)
 
 
 def solve_puzzle(
