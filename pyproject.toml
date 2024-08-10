@@ -9,12 +9,12 @@ dependencies = [
 ]
 
 [project.scripts]
-alphabet = "or_puzzles:alphabet.solve_puzzle"
-board = "or_puzzles:board.main"
-day31 = "or_puzzles:day31.solve"
-nonogram = "or_puzzles:nonogram.main"
-puzzle = "or_puzzles:puzzle.solve_puzzle"
-security-through-obscurity = "or_puzzles:security_through_obscurity.solve"
+alphabet = "or_puzzles.alphabet:solve_puzzle"
+board = "or_puzzles.board:main"
+day31 = "or_puzzles.day31:solve"
+nonogram = "or_puzzles.nonogram:main"
+puzzle = "or_puzzles.puzzle:solve_puzzle"
+security-through-obscurity = "or_puzzles.security_through_obscurity:solve"
 
 [build-system]
 requires = ["hatchling"]
@@ -28,14 +28,16 @@ dev-dependencies = [
 
 [tool.mypy]
 files = "."
+strict = true
 enable_error_code = [
   "explicit-override",
   "ignore-without-code",
   "redundant-expr",
   "truthy-bool",
+  "truthy-iterable",
+  "unused-awaitable",
 ]
-show_error_codes = true
-strict = true
+warn_unreachable = true
 
 [tool.ruff]
 target-version = "py312"
@@ -45,7 +47,9 @@ select = ["ALL"]
 ignore = [
   "C90",    # mccabe
   "COM",    # flake8-commas
+  "CPY",    # flake8-copyright
   "D",      # pydocstyle
+  "DOC",    # pydoclint
   "ERA",    # eradicate
   "PD",     # pandas-vet
   "PLR",    # pylint-refactor

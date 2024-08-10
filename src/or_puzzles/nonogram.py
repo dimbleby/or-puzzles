@@ -47,8 +47,7 @@ def constrain_line(
         if state == final_state:
             transitions.append((state, blank, state))
         elif label == blank:
-            transitions.append((state, blank, state))
-            transitions.append((state, square, state + 1))
+            transitions.extend(((state, blank, state), (state, square, state + 1)))
         else:
             next_label = labels[state + 1]
             transitions.append((state, next_label, state + 1))
