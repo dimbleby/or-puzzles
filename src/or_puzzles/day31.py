@@ -48,11 +48,11 @@ class SolutionPrinter(cp_model.CpSolverSolutionCallback):
             print("  ".join(pretty_row))
 
     def get_corner(self, x: int, y: int) -> int:
-        return sum(s * self.Value(self.corners[x, y, s]) for s in range(7))
+        return sum(s * self.value(self.corners[x, y, s]) for s in range(7))
 
     def get_tile(self, x: int, y: int) -> int:
         return sum(
-            i * self.Value(self.choices[i, x, y, r])
+            i * self.value(self.choices[i, x, y, r])
             for i in range(36)
             for r in range(4)
         )
@@ -68,7 +68,7 @@ def solve() -> None:
 
     # choices[i, x, y, r] is true iff we put tile i in cell (x,y) with rotation r.
     choices = {
-        (i, x, y, r): model.NewBoolVar(f"tile_{i}_{x}_{y}_{r}")
+        (i, x, y, r): model.new_bool_var(f"tile_{i}_{x}_{y}_{r}")
         for i in range(len(tiles))
         for x in range(6)
         for y in range(6)
@@ -77,7 +77,7 @@ def solve() -> None:
 
     # corners[x, y, s] is true iff the corner at (x,y) contains symbol s.
     corners = {
-        (x, y, s): model.NewBoolVar(f"corner_{x}_{y}_{s}")
+        (x, y, s): model.new_bool_var(f"corner_{x}_{y}_{s}")
         for x in range(7)
         for y in range(7)
         for s in range(7)
@@ -86,31 +86,31 @@ def solve() -> None:
     # Placing a tile puts a symbol in each corner.
     for (i, x, y, r), choice in choices.items():
         tile = tiles[i].rotate(r)
-        model.AddImplication(choice, corners[x, y, tile.symbols[0]])
-        model.AddImplication(choice, corners[x, y + 1, tile.symbols[1]])
-        model.AddImplication(choice, corners[x + 1, y + 1, tile.symbols[2]])
-        model.AddImplication(choice, corners[x + 1, y, tile.symbols[3]])
+        model.add_implication(choice, corners[x, y, tile.symbols[0]])
+        model.add_implication(choice, corners[x, y + 1, tile.symbols[1]])
+        model.add_implication(choice, corners[x + 1, y + 1, tile.symbols[2]])
+        model.add_implication(choice, corners[x + 1, y, tile.symbols[3]])
 
     # We must make exactly one choice for each tile.
     for i in range(len(tiles)):
-        model.AddExactlyOne(
+        model.add_exactly_one(
             choices[i, x, y, r] for x in range(6) for y in range(6) for r in range(4)
         )
 
-    # We must make exactly one choice for each square.
+    # We must make exactly one choice for each cell.
     for x, y in itertools.product(range(6), range(6)):
-        model.AddExactlyOne(
+        model.add_exactly_one(
             choices[i, x, y, r] for i in range(len(tiles)) for r in range(4)
         )
 
     # Each corner contains exactly one symbol.
     for x, y in itertools.product(range(7), range(7)):
-        model.AddExactlyOne(corners[x, y, s] for s in range(7))
+        model.add_exactly_one(corners[x, y, s] for s in range(7))
 
     # Solve.
     solution_printer = SolutionPrinter(choices, corners)
     solver = cp_model.CpSolver()
-    solver.Solve(model, solution_printer)
+    solver.solve(model, solution_printer)
 
 
 if __name__ == "__main__":

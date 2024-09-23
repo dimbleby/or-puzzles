@@ -12,72 +12,72 @@ def solve_puzzle() -> None:
     # Create variables.
     [canaries, spain, switzerland, _czech_republic, _bulgaria] = range(5)
 
-    nests = [model.NewIntVar(0, 4, f"nests{i}") for i in range(5)]
+    nests = [model.new_int_var(0, 4, f"nests{i}") for i in range(5)]
     [chimney, hedge, house, lake, straw] = nests
 
-    breeds = [model.NewIntVar(0, 4, f"breeds{i}") for i in range(5)]
+    breeds = [model.new_int_var(0, 4, f"breeds{i}") for i in range(5)]
     [finch, mallard, starling, swallow, woodpecker] = breeds
 
-    foods = [model.NewIntVar(0, 4, f"foods{i}") for i in range(5)]
+    foods = [model.new_int_var(0, 4, f"foods{i}") for i in range(5)]
     [_bread, cake, cookies, croissants, scones] = foods
 
-    activities = [model.NewIntVar(0, 4, f"activities{i}") for i in range(5)]
+    activities = [model.new_int_var(0, 4, f"activities{i}") for i in range(5)]
     [bird_baths, collecting, pecking, stealing, squawking] = activities
 
-    hometowns = [model.NewIntVar(0, 4, f"hometowns{i}") for i in range(5)]
+    hometowns = [model.new_int_var(0, 4, f"hometowns{i}") for i in range(5)]
     [barking, _camden, ealing, hounslow, kensington] = hometowns
 
-    model.AddAllDifferent(nests)
-    model.AddAllDifferent(breeds)
-    model.AddAllDifferent(foods)
-    model.AddAllDifferent(activities)
-    model.AddAllDifferent(hometowns)
+    model.add_all_different(nests)
+    model.add_all_different(breeds)
+    model.add_all_different(foods)
+    model.add_all_different(activities)
+    model.add_all_different(hometowns)
 
     # collecting-twigs next to kensington
-    model.AddAbsEquality(1, collecting - kensington)
+    model.add_abs_equality(1, collecting - kensington)
 
     # bird-baths next to brentford (which is in hounslow)
-    model.AddAbsEquality(1, bird_baths - hounslow)
+    model.add_abs_equality(1, bird_baths - hounslow)
 
     # spain and lakes
-    model.Add(lake == spain)
+    model.add(lake == spain)
 
     # finch and squawking
-    model.Add(finch == squawking)
+    model.add(finch == squawking)
 
     # croissants and pecking
-    model.Add(croissants == pecking)
+    model.add(croissants == pecking)
 
     # woodpeckers in tenerife
-    model.Add(woodpecker == canaries)
+    model.add(woodpecker == canaries)
 
     # straw, birdbath
-    model.Add(straw == bird_baths)
+    model.add(straw == bird_baths)
 
     # chocolate chip cookies, switzerland
-    model.Add(cookies == switzerland)
+    model.add(cookies == switzerland)
 
     # shiny things, ealing
-    model.Add(stealing == ealing)
+    model.add(stealing == ealing)
 
     # chimney stack one east of hedge
-    model.Add(chimney == hedge + 1)
+    model.add(chimney == hedge + 1)
 
     # starling, scones
-    model.Add(starling == scones)
+    model.add(starling == scones)
 
     # hedges, cakes
-    model.Add(hedge == cake)
+    model.add(hedge == cake)
 
     # mallard, barking
-    model.Add(mallard == barking)
+    model.add(mallard == barking)
 
     # swallow, house
-    model.Add(swallow == house)
+    model.add(swallow == house)
 
     # We want to know everything...
     solver = cp_model.CpSolver()
-    status = solver.Solve(model)
+    status = solver.solve(model)
     if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):  # type: ignore[comparison-overlap]
         print()
         print("nests:", [solver.Value(nests[i]) + 1 for i in range(5)])

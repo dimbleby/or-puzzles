@@ -9,14 +9,14 @@ ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 class Solver:
     def __init__(self) -> None:
         self.model = cp_model.CpModel()
-        self.letters = {k: self.model.NewIntVar(1, 26, k) for k in ALPHABET}
+        self.letters = {k: self.model.new_int_var(1, 26, k) for k in ALPHABET}
 
     def constrain(self, word: str, total: int) -> None:
-        self.model.Add(sum(self.letters[c] for c in word) == total)
+        self.model.add(sum(self.letters[c] for c in word) == total)
 
     def all_constraints(self) -> None:
-        self.model.AddAllDifferent(self.letters.values())
-        self.model.Add(self.letters["j"] < 10)
+        self.model.add_all_different(self.letters.values())
+        self.model.add(self.letters["j"] < 10)
 
         self.constrain("ariary", 111)
         self.constrain("birr", 83)
@@ -43,21 +43,22 @@ class Solver:
 
     def solve(self) -> None:
         solver = cp_model.CpSolver()
-        status = solver.Solve(self.model)
-        if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):  # type: ignore[comparison-overlap]
-            for c in ALPHABET:
-                print(f"{c} = {solver.Value(self.letters[c])}")
+        status = solver.solve(self.model)
+        assert status == cp_model.OPTIMAL  # type: ignore[comparison-overlap]
 
-            for word in (
-                "bottlecap",
-                "crindar",
-                "darsek",
-                "shanix",
-                "vinderbucks",
-                "woolong",
-            ):
-                value = sum(solver.Value(self.letters[c]) for c in word)
-                print(f"{word} should be {value}")
+        for c in ALPHABET:
+            print(f"{c} = {solver.value(self.letters[c])}")
+
+        for word in (
+            "bottlecap",
+            "crindar",
+            "darsek",
+            "shanix",
+            "vinderbucks",
+            "woolong",
+        ):
+            value = sum(solver.value(self.letters[c]) for c in word)
+            print(f"{word} should be {value}")
 
 
 def solve_puzzle() -> None:

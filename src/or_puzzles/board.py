@@ -116,7 +116,7 @@ class SolutionPrinter(cp_model.CpSolverSolutionCallback):
     def on_solution_callback(self) -> None:
         self.solution_count += 1
         for y in reversed(range(8)):
-            row = [self.Value(self.covers[x, y]) for x in range(8)]
+            row = [self.value(self.covers[x, y]) for x in range(8)]
             pretty_row = [f"{index:02d}" for index in row]
             print(" ".join(pretty_row))
         print()
@@ -130,14 +130,14 @@ def main() -> None:
 
     # choices[i, j] is true iff we pick possibility j for piece i.
     choices = {
-        (i, j): model.NewBoolVar(f"piece_{i}_{j}")
+        (i, j): model.new_bool_var(f"piece_{i}_{j}")
         for i, placements in possibilities.items()
         for j in range(len(placements))
     }
 
     # What piece is covering cell x, y?
     covers = {
-        (x, y): model.NewIntVar(0, len(PIECES) - 1, f"cell_{x}_{y}")
+        (x, y): model.new_int_var(0, len(PIECES) - 1, f"cell_{x}_{y}")
         for x in range(8)
         for y in range(8)
     }
@@ -145,12 +145,12 @@ def main() -> None:
     # Placing a piece covers cells.
     for (i, j), choice in choices.items():
         for cell in possibilities[i][j].cells:
-            model.Add(covers[cell.x, cell.y] == i).OnlyEnforceIf(choice)
+            model.add(covers[cell.x, cell.y] == i).only_enforce_if(choice)
 
     # We must choose exactly one placement for each piece
     for i, placements in possibilities.items():
         piece_choices = [choices[i, j] for j in range(len(placements))]
-        model.AddExactlyOne(piece_choices)
+        model.add_exactly_one(piece_choices)
 
     # We must cover each cell exactly once.
     for x, y in itertools.product(range(8), range(8)):
@@ -159,16 +159,16 @@ def main() -> None:
             for (i, j), choice in choices.items()
             if Cell(x, y) in possibilities[i][j].cells
         ]
-        model.AddExactlyOne(cell_choices)
+        model.add_exactly_one(cell_choices)
 
     # Break rotational symmetry.
-    model.Add(covers[0, 0] < covers[7, 7])
+    model.add(covers[0, 0] < covers[7, 7])
 
     # Solve.
     solution_printer = SolutionPrinter(covers)
     solver = cp_model.CpSolver()
     solver.parameters.enumerate_all_solutions = True
-    solver.Solve(model, solution_printer)
+    solver.solve(model, solution_printer)
     print(f"Found {solution_printer.solution_count} solutions")
 
 

@@ -53,7 +53,7 @@ def constrain_line(
             transitions.append((state, next_label, state + 1))
 
     # Add the constraint to the model.
-    model.AddAutomaton(line, initial_state, [final_state], transitions)
+    model.add_automaton(line, initial_state, [final_state], transitions)
 
 
 def solve_puzzle(
@@ -89,14 +89,14 @@ def solve_puzzle(
 
     # squares[i, j]: is square i,j filled in?
     squares = {
-        (i, j): model.NewBoolVar(f"squares_{i}_{j}")
+        (i, j): model.new_bool_var(f"squares_{i}_{j}")
         for i in range(num_rows)
         for j in range(num_columns)
     }
 
     # Given clues are given.
     for i, j in givens:
-        model.Add(squares[i, j] == 1)
+        model.add(squares[i, j] == 1)
 
     # Row constraints must be satisfied.
     for i, clues in enumerate(row_clues):
@@ -110,12 +110,12 @@ def solve_puzzle(
 
     # Find a solution.
     solver = cp_model.CpSolver()
-    status = solver.Solve(model)
+    status = solver.solve(model)
 
     # Pretty print the solution.
     if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):  # type: ignore[comparison-overlap]
         for i in range(num_rows):
-            row = [solver.Value(squares[i, j]) for j in range(num_columns)]
+            row = [solver.value(squares[i, j]) for j in range(num_columns)]
             pretty_row = ["█" if filled else " " for filled in row]
             print("".join(pretty_row))
     else:
