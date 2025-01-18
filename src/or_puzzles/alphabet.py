@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import string
+
 from ortools.sat.python import cp_model
 
-ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+ALPHABET = string.ascii_lowercase
 
 
 class Solver:

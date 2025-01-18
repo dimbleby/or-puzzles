@@ -16,20 +16,21 @@ nonogram = "or_puzzles.nonogram:main"
 puzzle = "or_puzzles.puzzle:solve_puzzle"
 security-through-obscurity = "or_puzzles.security_through_obscurity:solve"
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.uv]
-dev-dependencies = [
-  "ruff>=0.5.6",
+[dependency-groups]
+dev = [
+  "ruff>=0.8.0",
   "mypy>=1.11.1",
 ]
+
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
 
 [tool.mypy]
 files = "."
 strict = true
 enable_error_code = [
+  "deprecated",
   "explicit-override",
   "ignore-without-code",
   "redundant-expr",
@@ -59,7 +60,7 @@ ignore = [
   "S101",   # assert-used
 ]
 extend-safe-fixes = [
-  "TCH", # flake8-type-checking
+  "TC", # flake8-type-checking
 ]
 unfixable = [
   "F841", # unused-variable

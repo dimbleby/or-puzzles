@@ -41,7 +41,7 @@ class SolutionPrinter(cp_model.CpSolverSolutionCallback):
             if y != 6:
                 tiles = [self.get_tile(x, y) for x in range(6)]
                 pretty_row = [f"{tile + 1:02d}" for tile in tiles]
-                print(f" {" ".join(pretty_row)}")
+                print(f" {' '.join(pretty_row)}")
 
             corners = [self.get_corner(x, y) for x in range(7)]
             pretty_row = [f"{Tile.LETTERS[corner]}" for corner in corners]
