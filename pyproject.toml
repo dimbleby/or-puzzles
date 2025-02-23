@@ -13,7 +13,6 @@ alphabet = "or_puzzles.alphabet:solve_puzzle"
 board = "or_puzzles.board:main"
 day31 = "or_puzzles.day31:solve"
 nonogram = "or_puzzles.nonogram:main"
-puzzle = "or_puzzles.puzzle:solve_puzzle"
 security-through-obscurity = "or_puzzles.security_through_obscurity:solve"
 
 [dependency-groups]
