@@ -22,8 +22,8 @@ dev = [
 ]
 
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["uv-build>=0.5"]
+build-backend = "uv_build"
 
 [tool.mypy]
 files = "."
