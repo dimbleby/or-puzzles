@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from __future__ import annotations
+
 
 import string
 
@@ -46,7 +46,7 @@ class Solver:
     def solve(self) -> None:
         solver = cp_model.CpSolver()
         status = solver.solve(self.model)
-        assert status == cp_model.OPTIMAL  # type: ignore[comparison-overlap]
+        assert status == cp_model.OPTIMAL
 
         for c in ALPHABET:
             print(f"{c} = {solver.value(self.letters[c])}")

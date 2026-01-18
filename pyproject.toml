@@ -3,9 +3,9 @@ name = "or-puzzles"
 version = "0.1.0"
 description = "Some puzzles solved using ortools"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
-  "ortools>=9.10.4067",
+    "ortools>=9.15.6755",
 ]
 
 [project.scripts]
@@ -15,29 +15,9 @@ day31 = "or_puzzles.day31:solve"
 nonogram = "or_puzzles.nonogram:main"
 security-through-obscurity = "or_puzzles.security_through_obscurity:solve"
 
-[dependency-groups]
-dev = [
-  "ruff>=0.8.0",
-  "mypy>=1.11.1",
-]
-
 [build-system]
 requires = ["uv-build>=0.5"]
 build-backend = "uv_build"
-
-[tool.mypy]
-files = "."
-strict = true
-enable_error_code = [
-  "deprecated",
-  "explicit-override",
-  "ignore-without-code",
-  "redundant-expr",
-  "truthy-bool",
-  "truthy-iterable",
-  "unused-awaitable",
-]
-warn_unreachable = true
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -67,6 +47,3 @@ ban-relative-imports = "all"
 
 [tool.ruff.lint.flake8-type-checking]
 strict = true
-
-[tool.ruff.lint.isort]
-required-imports = ["from __future__ import annotations"]

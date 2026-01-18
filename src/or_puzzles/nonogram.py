@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from __future__ import annotations
+
 
 from typing import TYPE_CHECKING
 
@@ -113,7 +113,7 @@ def solve_puzzle(
     status = solver.solve(model)
 
     # Pretty print the solution.
-    if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):  # type: ignore[comparison-overlap]
+    if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):
         for i in range(num_rows):
             row = [solver.value(squares[i, j]) for j in range(num_columns)]
             pretty_row = ["█" if filled else " " for filled in row]
