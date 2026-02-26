@@ -48,8 +48,7 @@ def neighbours(square: int) -> Iterable[int]:
         if not 0 <= new_col < 6:
             continue
 
-        new_square = 6 * new_row + new_col
-        yield new_square
+        yield 6 * new_row + new_col
 
 
 class SolutionPrinter(cp_model.CpSolverSolutionCallback):
