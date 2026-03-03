@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 
-import itertools
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, override
 
@@ -108,18 +107,23 @@ PIECES = [
 
 
 class SolutionPrinter(cp_model.CpSolverSolutionCallback):
-    def __init__(self, covers: dict[tuple[int, int], cp_model.IntVar]) -> None:
+    def __init__(
+        self, cell_coverers: dict[tuple[int, int], list[tuple[int, cp_model.IntVar]]]
+    ) -> None:
         super().__init__()
-        self.covers = covers
+        self.cell_coverers = cell_coverers
         self.solution_count = 0
 
     def on_solution_callback(self) -> None:
         self.solution_count += 1
         for y in reversed(range(8)):
-            row = [self.value(self.covers[x, y]) for x in range(8)]
+            row = [self._piece_at(x, y) for x in range(8)]
             pretty_row = [f"{index:02d}" for index in row]
             print(" ".join(pretty_row))
         print()
+
+    def _piece_at(self, x: int, y: int) -> int:
+        return next(i for i, c in self.cell_coverers[x, y] if self.value(c))
 
 
 def main() -> None:
@@ -135,39 +139,42 @@ def main() -> None:
         for j in range(len(placements))
     }
 
-    # What piece is covering cell x, y?
-    covers = {
-        (x, y): model.new_int_var(0, len(PIECES) - 1, f"cell_{x}_{y}")
-        for x in range(8)
-        for y in range(8)
-    }
-
-    # Placing a piece covers cells.
-    for (i, j), choice in choices.items():
-        for cell in possibilities[i][j].cells:
-            model.add(covers[cell.x, cell.y] == i).only_enforce_if(choice)
-
-    # We must choose exactly one placement for each piece
+    # We must choose exactly one placement for each piece.
     for i, placements in possibilities.items():
         piece_choices = [choices[i, j] for j in range(len(placements))]
         model.add_exactly_one(piece_choices)
 
-    # We must cover each cell exactly once.
-    for x, y in itertools.product(range(8), range(8)):
-        cell_choices = [
-            choice
-            for (i, j), choice in choices.items()
-            if Cell(x, y) in possibilities[i][j].cells
-        ]
-        model.add_exactly_one(cell_choices)
+    # For each cell, which (piece_index, choice_var) pairs can cover it?
+    cell_coverers: dict[tuple[int, int], list[tuple[int, cp_model.IntVar]]] = {
+        (x, y): [] for x in range(8) for y in range(8)
+    }
+    for (i, j), choice in choices.items():
+        for cell in possibilities[i][j].cells:
+            cell_coverers[cell.x, cell.y].append((i, choice))
 
-    # Break rotational symmetry.
-    model.add(covers[0, 0] < covers[7, 7])
+    # We must cover each cell exactly once.
+    for coverers in cell_coverers.values():
+        model.add_exactly_one(c for _, c in coverers)
+
+    # Break rotational symmetry: piece covering (0,0) must be less than (7,7).
+    for i_a, choice_a in cell_coverers[0, 0]:
+        for i_b, choice_b in cell_coverers[7, 7]:
+            if i_b <= i_a:
+                model.add_bool_or([choice_a.negated(), choice_b.negated()])
+
+    # Decision strategy: branch on pieces with fewest placements first.
+    ordered_vars = []
+    for i in sorted(possibilities, key=lambda i: len(possibilities[i])):
+        ordered_vars.extend(choices[i, j] for j in range(len(possibilities[i])))
+    model.add_decision_strategy(
+        ordered_vars, cp_model.CHOOSE_FIRST, cp_model.SELECT_MAX_VALUE
+    )
 
     # Solve.
-    solution_printer = SolutionPrinter(covers)
+    solution_printer = SolutionPrinter(cell_coverers)
     solver = cp_model.CpSolver()
     solver.parameters.enumerate_all_solutions = True
+    solver.parameters.search_branching = cp_model.FIXED_SEARCH
     solver.solve(model, solution_printer)
     print(f"Found {solution_printer.solution_count} solutions")
 

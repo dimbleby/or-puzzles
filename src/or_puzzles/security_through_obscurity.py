@@ -33,13 +33,29 @@ KNIGHT_MOVES = [
     (2, -1),
     (2, 1),
 ]
+STEPS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 SUITS = ["C", "D", "H", "S"]
 
 
-def neighbours(square: int) -> Iterable[int]:
+def knight_neighbours(square: int) -> Iterable[int]:
     row = square // 6
     col = square % 6
     for dr, dc in KNIGHT_MOVES:
+        new_row = row + dr
+        if not 0 <= new_row < 6:
+            continue
+
+        new_col = col + dc
+        if not 0 <= new_col < 6:
+            continue
+
+        yield 6 * new_row + new_col
+
+
+def step_neighbours(square: int) -> Iterable[int]:
+    row = square // 6
+    col = square % 6
+    for dr, dc in STEPS:
         new_row = row + dr
         if not 0 <= new_row < 6:
             continue
@@ -84,7 +100,7 @@ def solve() -> None:
     model.add_all_different(next_hop)
 
     for i in range(36):
-        candidates = neighbours(i)
+        candidates = knight_neighbours(i)
         domain = cp_model.Domain.FromValues(list(candidates))
         model.add_linear_expression_in_domain(next_hop[i], domain)
         model.add_element(route[i - 1], next_hop, route[i])
@@ -131,14 +147,10 @@ def solve() -> None:
     model.add(faces[-2] > faces[-4])
 
     # We're given some adjacent pairs.
-    #
-    # The constraint here is weaker than what we are told, but it's easy and sufficient.
-    for card in (6, 9, 13, 18, 31, 39):
-        model.add(squares[card] < 36)
-    adjacent = cp_model.Domain.FromValues([-6, -1, 1, 6])
-    model.add_linear_expression_in_domain(squares[6] - squares[9], adjacent)
-    model.add_linear_expression_in_domain(squares[13] - squares[18], adjacent)
-    model.add_linear_expression_in_domain(squares[31] - squares[39], adjacent)
+    adjacents = [(s, n) for s in range(36) for n in step_neighbours(s)]
+    model.add_allowed_assignments([squares[6], squares[9]], adjacents)
+    model.add_allowed_assignments([squares[13], squares[18]], adjacents)
+    model.add_allowed_assignments([squares[31], squares[39]], adjacents)
 
     # Threes and nines in the grid are all on or orthogonally adjacent to a corner.
     for i in range(36):
